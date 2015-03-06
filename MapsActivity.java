@@ -1,6 +1,5 @@
 package com.example.steven.homework_4;
 
-import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,12 +10,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -24,22 +23,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.ArrayList;
 
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap map; // Might be null if Google Play services APK is not available.
-    double latitude = 0;
-    double longitude = 0;
-    String lat = null;
-    String lng = null;
-    boolean done;
+    private String API_KEY = "AIzaSyCs6-RKKF9uy_x8WXGnWIYu5Fj5zt6gD4w";
+    private ArrayList<Double> latitude;
+    private ArrayList<Double> longitude;
+    private ArrayList<String> lat;
+    private ArrayList<String> lng;
+    private ArrayList<String> markerNames;
+    private boolean done;
 
     public void sendAddress(View view){
         final EditText editText = (EditText) findViewById(R.id.edit_message);
+        latitude = new ArrayList<Double>();
+        longitude = new ArrayList<Double>();
+        lat = new ArrayList<String>();
+        lng = new ArrayList<String>();
+        markerNames = new ArrayList<String>();
         done = false;
         //Log.println(10, "Log", request);
         Thread t = new Thread(new Runnable(){
@@ -64,9 +68,12 @@ public class MapsActivity extends FragmentActivity {
                         JSONArray results = jsonObj.getJSONArray("results");
                         for(int k = 0; k < results.length(); k += 1){
                             JSONObject array = results.getJSONObject(k);
+                            if(array.has("formatted_address")){
+                                markerNames.add(array.getString("formatted_address").toString());
+                            }
                             if(array.has("geometry")) {
-                                lat = array.getJSONObject("geometry").getJSONObject("location").getString("lat").toString();
-                                lng = array.getJSONObject("geometry").getJSONObject("location").getString("lng").toString();
+                                lat.add(array.getJSONObject("geometry").getJSONObject("location").getString("lat").toString());
+                                lng.add(array.getJSONObject("geometry").getJSONObject("location").getString("lng").toString());
                             }
                         }
                     }
@@ -77,9 +84,46 @@ public class MapsActivity extends FragmentActivity {
                 catch(JSONException e){
                     e.printStackTrace();
                 }
-                if((lat != null) && (lng != null)){
-                    latitude = Double.parseDouble(lat);
-                    longitude = Double.parseDouble(lng);
+                if((lat.get(0) != null) && (lng.get(0) != null)){
+                    latitude.add(Double.parseDouble(lat.get(0)));
+                    longitude.add(Double.parseDouble(lng.get(0)));
+                }
+
+                request = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=";
+                request += latitude.get(0)+","+longitude.get(0)+"&radius=3000&types=gas_station&key="+API_KEY;
+                get = new HttpGet(request);
+                try{
+                    response = client.execute(get);
+
+                    String json = EntityUtils.toString(response.getEntity());
+                    Log.i("JSON", json);
+                    JSONObject jsonObj = new JSONObject(json);
+                    String status = jsonObj.getString("status").toString();
+                    if(status.equalsIgnoreCase("OK")){
+                        JSONArray results = jsonObj.getJSONArray("results");
+                        for(int k = 0; k < results.length(); k += 1){
+                            JSONObject array = results.getJSONObject(k);
+                            if(array.has("name")){
+                                markerNames.add(array.getString("name").toString());
+                            }
+                            if(array.has("geometry")){
+                                lat.add(array.getJSONObject("geometry").getJSONObject("location").getString("lat").toString());
+                                lng.add(array.getJSONObject("geometry").getJSONObject("location").getString("lng").toString());
+                            }
+                        }
+                    }
+                    for(int k = 1; k < markerNames.size(); k += 1){
+                        if((lat.get(k) != null) && (lng.get(k) != null)){
+                            latitude.add(Double.parseDouble(lat.get(k)));
+                            longitude.add(Double.parseDouble(lng.get(k)));
+                        }
+                    }
+                }
+                catch(IOException e){
+                    e.printStackTrace();
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
                 }
                 done = true;
                 //map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -89,14 +133,19 @@ public class MapsActivity extends FragmentActivity {
         while(!done){}
         Log.i("Lat =", latitude+"");
         Log.i("Lng =", longitude+"");
-        if((lat != null) && (lng != null)){
-            LatLng latlng = new LatLng(latitude, longitude);
+        if((lat.get(0) != null) && (lng.get(0) != null)){
+            LatLng latlng = new LatLng(latitude.get(0), longitude.get(0));
             map.clear();
             map.moveCamera(CameraUpdateFactory.newLatLng(latlng));
-            map.moveCamera(CameraUpdateFactory.zoomTo(15));
-            MarkerOptions marker = new MarkerOptions();
-            marker.position(latlng);
-            map.addMarker(marker);
+            map.moveCamera(CameraUpdateFactory.zoomTo(12));
+            Marker marker = map.addMarker(new MarkerOptions().position(latlng).title(markerNames.get(0)));
+            marker.showInfoWindow();
+            for(int k = 1; k < markerNames.size(); k += 1){
+                if((lat.get(k) != null) && (lng.get(k) != null)){
+                    latlng = new LatLng(latitude.get(k), longitude.get(k));
+                    map.addMarker(new MarkerOptions().position(latlng).title(markerNames.get(k)));
+                }
+            }
         }
     }
 
