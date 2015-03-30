@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+    <servlet>
+        <servlet-name>UsersServlet</servlet-name>
+        <servlet-class>casuals.filthy.playmaker.backend.UsersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UsersServlet</servlet-name>
+        <url-pattern>/users</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GroupsServlet</servlet-name>
+        <servlet-class>casuals.filthy.playmaker.backend.GroupsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GroupsServlet</servlet-name>
+        <url-pattern>/groups</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EventsServlet</servlet-name>
+        <servlet-class>casuals.filthy.playmaker.backend.EventsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EventsServlet</servlet-name>
+        <url-pattern>/groups/events</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GroupUsersServlet</servlet-name>
+        <servlet-class>casuals.filthy.playmaker.backend.GroupUsersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GroupUsersServlet</servlet-name>
+        <url-pattern>/group/users</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PollsServlet</servlet-name>
+        <servlet-class>casuals.filthy.playmaker.backend.PollsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PollsServlet</servlet-name>
+        <url-pattern>/groups/polls</url-pattern>
+    </servlet-mapping>
+
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>

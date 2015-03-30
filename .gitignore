@@ -1,0 +1,11 @@
+MyApplication/app/app.iml
+MyApplication/backend/build/exploded-app/META-INF/MANIFEST.MF
+MyApplication/backend/build/exploded-app/WEB-INF/appengine-web.xml
+MyApplication/backend/build/exploded-app/WEB-INF/classes/casuals/filthy/playmaker/backend/MyServlet.class
+MyApplication/backend/build/exploded-app/WEB-INF/lib/servlet-api-2.5.jar
+MyApplication/backend/build/exploded-app/WEB-INF/logging.properties
+MyApplication/backend/build/exploded-app/WEB-INF/web.xml
+MyApplication/backend/build/exploded-app/index.html
+MyApplication/backend/build/libs/backend.war
+MyApplication/backend/build/tmp/war/MANIFEST.MF
+MyApplication/backend/build/

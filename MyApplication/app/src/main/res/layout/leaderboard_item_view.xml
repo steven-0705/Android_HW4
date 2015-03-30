@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:maxHeight="128dp"
+        android:maxWidth="128dp"
+        android:src="@drawable/leaderboard_icon"
+         />
+
+    <TextView
+        android:id="@+id/item_textPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Condition shown here"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignBottom="@+id/item_icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/item_textDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2000"
+        android:layout_toRightOf="@+id/item_icon"
+        android:layout_alignBottom="@+id/item_textPlace"
+        android:layout_toLeftOf="@+id/item_textPlace"
+        android:layout_toStartOf="@+id/item_textPlace" />
+
+    <TextView
+        android:id="@+id/item_textName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make Shown Here"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/item_icon"
+        android:layout_above="@+id/item_textPlace"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
